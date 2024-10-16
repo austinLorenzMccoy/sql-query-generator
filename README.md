@@ -1,7 +1,6 @@
-
 # SQL Query Generator with Google Gemini
 
-This project is a Streamlit application that converts English questions into SQL queries using Google Gemini's generative AI capabilities. It allows users to retrieve data from an SQLite database named **STUDENT**, which contains information about students, their classes, sections, and marks.
+This project is a Streamlit application that converts English questions into SQL queries using Google Gemini's generative AI capabilities. It allows users to retrieve data from an SQLite database named **student.db**, which contains information about students, their classes, sections, and marks.
 
 ## Table of Contents
 
@@ -17,8 +16,9 @@ This project is a Streamlit application that converts English questions into SQL
 ## Features
 
 - Convert natural language questions into SQL queries.
-- Execute generated SQL queries against an SQLite database.
+- Execute generated SQL queries against the SQLite database.
 - User-friendly interface built with Streamlit.
+- Response cleaning to ensure valid SQL execution.
 
 ## Technologies Used
 
@@ -26,6 +26,7 @@ This project is a Streamlit application that converts English questions into SQL
 - [SQLite](https://www.sqlite.org/index.html) - Lightweight database to store student records.
 - [Google Generative AI](https://developers.google.com/generative-ai) - To generate SQL queries from text input.
 - [Python](https://www.python.org/) - Programming language used to build the application.
+- [Regex](https://docs.python.org/3/library/re.html) - For cleaning generated SQL queries.
 
 ## Installation
 
@@ -82,14 +83,14 @@ Here are some example questions you can ask:
 
 ## Database Schema
 
-The database **STUDENT** has the following schema:
+The database **student.db** has the following schema:
 
 | Column  | Type    | Description                          |
 |---------|---------|--------------------------------------|
-| NAME    | TEXT    | Name of the student                  |
-| CLASS   | TEXT    | Class of the student                 |
-| SECTION | TEXT    | Section of the student               |
-| MARKS   | INTEGER | Marks obtained by the student        |
+| NAME    | VARCHAR(25) | Name of the student                  |
+| CLASS   | VARCHAR(25) | Class of the student                 |
+| SECTION | VARCHAR(25) | Section of the student               |
+| MARKS   | INT     | Marks obtained by the student        |
 
 ## Contributing
 
@@ -101,24 +102,21 @@ Contributions are welcome! Please open an issue or submit a pull request if you'
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a pull request.
 
-## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-```
 
-### Explanation of Sections
+### Key Sections Explained
 
-1. **Title & Introduction:** Gives an overview of what the project is about.
-2. **Table of Contents:** Helps users navigate the document quickly.
-3. **Features:** Highlights the main features of the app.
-4. **Technologies Used:** Lists the technologies and frameworks involved in the project.
-5. **Installation:** Step-by-step guide on how to install and set up the project.
-6. **Usage:** Instructions on how to run the app and interact with it.
-7. **Example Queries:** Provides sample questions users can input to test the functionality.
-8. **Database Schema:** Describes the structure of the SQLite database.
-9. **Contributing:** Encourages collaboration and outlines how others can contribute to the project.
-10. **License:** States the licensing information for the project.
+1. **Title & Introduction:** Brief overview of the project and its purpose.
+2. **Table of Contents:** Provides easy navigation throughout the README.
+3. **Features:** Highlights the main capabilities of the application.
+4. **Technologies Used:** Lists the frameworks, libraries, and languages used in the project.
+5. **Installation:** Step-by-step guide for setting up the project, including environment variable setup.
+6. **Usage:** Instructions on how to run the application and interact with it.
+7. **Example Queries:** Offers sample questions to demonstrate the app’s functionality.
+8. **Database Schema:** Details the structure of the SQLite database for better understanding.
+9. **Contributing:** Encourages community contributions with a guide on how to do so.
+10. **License:** Information regarding the licensing of the project.
 
 ### Tips for Customization
 
