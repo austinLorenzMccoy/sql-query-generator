@@ -1,77 +1,77 @@
-# SQL Query Generator with Google Gemini
+# Text-to-SQL Platform (FastAPI + Groq) 🚀
 
-This project is a Streamlit application that converts English questions into SQL queries using Google Gemini's generative AI capabilities. It allows users to retrieve data from an SQLite database named **student.db**, which contains information about students, their classes, sections, and marks.
+This repository provides a modular backend that converts natural language into SQL and executes it on an SQLite database (`student.db`).
+
+The backend is built with FastAPI and uses Groq’s OpenAI-compatible API to generate SQL from English questions. A separate modern UI will be added by the frontend team.
+
+[Repo: austinLorenzMccoy/sql-query-generator](https://github.com/austinLorenzMccoy/sql-query-generator)
+
+![build](https://img.shields.io/badge/build-passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-100%20pass-green)
+![coverage](https://img.shields.io/badge/coverage-79%25-yellow)
+![fastapi](https://img.shields.io/badge/FastAPI-0.116-009688?logo=fastapi)
+![python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![license](https://img.shields.io/badge/license-MIT-blue)
 
 ## Table of Contents
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Features](#features-)
+- [Technologies Used](#technologies-used-)
+- [Getting Started](#getting-started-)
 - [Example Queries](#example-queries)
-- [Database Schema](#database-schema)
-- [Contributing](#contributing)
-- [License](#license)
+- [Database Schema](#database-schema-)
+- [Architecture](#architecture-)
+- [Demo](#demo-)
+- [API Endpoints (v1)](#api-endpoints-v1-)
+- [Testing & Coverage](#testing--coverage-)
+- [Roadmap](#roadmap-)
+- [Contributing](#contributing-)
 
-## Features
+## Features ✨
 
-- Convert natural language questions into SQL queries.
+- Convert natural language questions into SQL queries (Groq).
 - Execute generated SQL queries against the SQLite database.
-- User-friendly interface built with Streamlit.
-- Response cleaning to ensure valid SQL execution.
+- Clean SQL responses (strip markdown, enforce semicolon).
+- Modern FastAPI backend with auto docs at `/docs`.
+- Full test suite with coverage and temporary DB isolation.
 
-## Technologies Used
+## Technologies Used 🧰
 
-- [Streamlit](https://streamlit.io/) - For building the web application.
-- [SQLite](https://www.sqlite.org/index.html) - Lightweight database to store student records.
-- [Google Generative AI](https://developers.google.com/generative-ai) - To generate SQL queries from text input.
-- [Python](https://www.python.org/) - Programming language used to build the application.
-- [Regex](https://docs.python.org/3/library/re.html) - For cleaning generated SQL queries.
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend API
+- [Groq](https://groq.com/) for NL→SQL (OpenAI-compatible API)
+- [SQLite](https://www.sqlite.org/) for the demo database
+- [Pydantic](https://docs.pydantic.dev/) for validation
+- [Pytest](https://docs.pytest.org/) for testing and coverage
 
-## Installation
+## Getting Started 🛠️
 
-To get started, clone the repository and install the required dependencies.
+Backend is located in `backend/`. You can use Conda for a reproducible setup.
 
-### Prerequisites
+1) Create environment (Option A: from file)
+```bash
+conda env create -f backend/environment.yml
+conda activate text2sql-backend
+```
 
-- Python 3.7 or higher
-- pip (Python package installer)
+Or Option B (manual):
+```bash
+conda create -n text2sql-backend python=3.11 -y
+conda activate text2sql-backend
+pip install -e backend[dev]
+```
 
-### Steps to Install
+2) Configure environment variables
+```bash
+cp backend/.env.example backend/.env
+# edit backend/.env and set GROQ_API_KEY and (optionally) GROQ_MODEL
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/sql-query-generator.git
-   cd sql-query-generator
-   ```
+3) Run the API (from repo root)
+```bash
+uvicorn app.main:app --reload --port 8000 --app-dir backend
+```
 
-2. **Create a virtual environment (optional but recommended):**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # On Windows use `venv\Scripts\activate`
-   ```
-
-3. **Install required packages:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up your environment variables:**
-   - Create a `.env` file in the project root and add your Google API key:
-     ```
-     GOOGLE_API_KEY=your_api_key_here
-     ```
-
-## Usage
-
-1. Run the Streamlit application:
-   ```bash
-   streamlit run app.py
-   ```
-
-2. Open your browser and go to `http://localhost:8501`.
-
-3. Input your question in the text box and click the "Ask the question" button. The app will generate an SQL query based on your input and execute it against the database, displaying the results.
+Open API docs at: http://127.0.0.1:8000/docs
 
 ## Example Queries
 
@@ -92,6 +92,75 @@ The database **student.db** has the following schema:
 | SECTION | VARCHAR(25) | Section of the student               |
 | MARKS   | INT     | Marks obtained by the student        |
 
+## Architecture 🧩
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      Client (future SPA)                      │
+└──────────────▲───────────────────────────────────────▲───────┘
+               │                                       │
+               │ HTTP (JSON)                           │
+               │                                       │
+        ┌──────┴───────────────────────────────────────┴──────┐
+        │                     FastAPI Backend                   │
+        │                 `backend/app/main.py`                 │
+        ├───────────────┬───────────────────────────┬──────────┤
+        │ API (v1)      │ Services                  │ Utils     │
+        │ routes.py     │ - nl2sql.py (Groq)        │ - sql_cleaner.py
+        │               │ - db.py (SQLite ops)      │          │
+        └───────────────┴───────────────┬───────────┴──────────┘
+                                        │
+                                        │ SQL
+                                        ▼
+                                 SQLite: student.db
+```
+
+## Demo ▶️
+
+- Start server from repo root:
+  ```bash
+  uvicorn app.main:app --reload --port 8000 --app-dir backend
+  ```
+- Run the demo script:
+  ```bash
+  python backend/api_demo.py
+  ```
+
+## API Endpoints (v1) 📡
+
+- GET `/api/v1/health` → health check
+- GET `/api/v1/students` → list all students
+- POST `/api/v1/sql` → execute provided SQL
+- POST `/api/v1/nl2sql` → convert NL to SQL using Groq
+
+Example curl (after starting the server):
+```bash
+curl http://127.0.0.1:8000/api/v1/health
+curl http://127.0.0.1:8000/api/v1/students
+curl -X POST http://127.0.0.1:8000/api/v1/sql \
+  -H 'Content-Type: application/json' \
+  -d '{"sql":"SELECT COUNT(*) FROM STUDENT;"}'
+curl -X POST http://127.0.0.1:8000/api/v1/nl2sql \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"How many entries of records are present?"}'
+```
+
+## Testing & Coverage 🧪
+
+```bash
+cd backend
+pytest -q --cov=app --cov-report=term-missing
+```
+
+Tests use a temporary SQLite DB and do not touch your real `student.db`.
+
+## Roadmap 🗺️
+
+- Frontend UI integration (modern SPA)
+- AuthN/Z and rate limiting
+- Schema introspection and multi-table support
+- Safer SQL generation and validation guardrails
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request if you'd like to contribute.
@@ -102,24 +171,6 @@ Contributions are welcome! Please open an issue or submit a pull request if you'
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a pull request.
 
+## License
 
-
-
-### Key Sections Explained
-
-1. **Title & Introduction:** Brief overview of the project and its purpose.
-2. **Table of Contents:** Provides easy navigation throughout the README.
-3. **Features:** Highlights the main capabilities of the application.
-4. **Technologies Used:** Lists the frameworks, libraries, and languages used in the project.
-5. **Installation:** Step-by-step guide for setting up the project, including environment variable setup.
-6. **Usage:** Instructions on how to run the application and interact with it.
-7. **Example Queries:** Offers sample questions to demonstrate the app’s functionality.
-8. **Database Schema:** Details the structure of the SQLite database for better understanding.
-9. **Contributing:** Encourages community contributions with a guide on how to do so.
-10. **License:** Information regarding the licensing of the project.
-
-### Tips for Customization
-
-- Replace placeholders like `yourusername` and `your_api_key_here` with actual values relevant to your project.
-- Adjust the content based on any additional features or changes you have made.
-- Make sure to include any additional documentation or instructions relevant to your specific project needs.
+This project is licensed under the MIT License.
