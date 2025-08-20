@@ -1,10 +1,8 @@
 # Text-to-SQL Platform (FastAPI + Groq) 🚀
 
-This repository provides a modular backend that converts natural language into SQL and executes it on an SQLite database (`student.db`).
+This repository provides a modular backend that converts natural language into SQL and executes it on an SQLite database (`school.db`).
 
 The backend is built with FastAPI and uses Groq’s OpenAI-compatible API to generate SQL from English questions. A separate modern UI will be added by the frontend team.
-
-[Repo: austinLorenzMccoy/sql-query-generator](https://github.com/austinLorenzMccoy/sql-query-generator)
 
 ![build](https://img.shields.io/badge/build-passing-brightgreen)
 ![tests](https://img.shields.io/badge/tests-100%20pass-green)
@@ -66,6 +64,11 @@ cp backend/.env.example backend/.env
 # edit backend/.env and set GROQ_API_KEY and (optionally) GROQ_MODEL
 ```
 
+2.5) Seed the database (creates/refreshes `school.db`)
+```bash
+python backend/scripts/seed_db.py
+```
+
 3) Run the API (from repo root)
 ```bash
 uvicorn app.main:app --reload --port 8000 --app-dir backend
@@ -83,7 +86,7 @@ Here are some example questions you can ask:
 
 ## Database Schema
 
-The database **student.db** has the following schema:
+The database **school.db** has the following schema:
 
 | Column  | Type    | Description                          |
 |---------|---------|--------------------------------------|
@@ -112,7 +115,7 @@ The database **student.db** has the following schema:
                                         │
                                         │ SQL
                                         ▼
-                                 SQLite: student.db
+                                 SQLite: school.db
 ```
 
 ## Demo ▶️
@@ -152,7 +155,7 @@ cd backend
 pytest -q --cov=app --cov-report=term-missing
 ```
 
-Tests use a temporary SQLite DB and do not touch your real `student.db`.
+Tests use a temporary SQLite DB and do not touch your real `school.db`.
 
 ## Roadmap 🗺️
 

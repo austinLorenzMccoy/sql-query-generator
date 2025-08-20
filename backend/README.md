@@ -1,6 +1,6 @@
 # Text-to-SQL Backend (FastAPI + Groq)
 
-A modular FastAPI backend that converts natural language to SQL for the `STUDENT` table in `student.db` and executes queries safely.
+A modular FastAPI backend that converts natural language to SQL for the `STUDENT` table in `school.db` and executes queries safely.
 
 ## Project Structure
 
@@ -40,7 +40,7 @@ backend/
 
 - Python 3.9+
 - Conda (for environment management)
-- SQLite database at `TextToSQLapp/student.db` (already in repo)
+- SQLite database at `TextToSQLapp/school.db` (can be created/seeded)
 
 ## Quickstart (Conda + Uvicorn)
 
@@ -58,6 +58,9 @@ conda activate text2sql-backend
 # prepare env
 cp backend/.env.example backend/.env
 # then edit backend/.env and set GROQ_API_KEY
+
+# seed demo database (creates/refreshes `school.db`)
+python backend/scripts/seed_db.py
 
 # run API
 uvicorn app.main:app --reload --port 8000 --app-dir backend
@@ -101,14 +104,14 @@ pytest
 pytest -q --cov=app --cov-report=term-missing --cov-report=xml:coverage.xml
 ```
 
-The test suite uses a temporary SQLite database and does not touch your real `student.db`.
+The test suite uses a temporary SQLite database and does not touch your real `school.db`.
 
 ## Configuration
 
 Configuration is handled by `app/core/config.py` using Pydantic BaseSettings:
 
 - `APP_NAME` (default: Text-to-SQL Backend)
-- `SQLITE_PATH` (default: student.db)
+- `SQLITE_PATH` (default: school.db)
 - `GROQ_API_KEY` (required for /nl2sql)
 - `GROQ_MODEL` (default: llama-3.1-70b-versatile)
 

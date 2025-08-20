@@ -9,7 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     app_name: str = Field("Text-to-SQL Backend", env="APP_NAME")
-    sqlite_path: str = Field("student.db", env="SQLITE_PATH")
+    sqlite_path: str = Field("school.db", env="SQLITE_PATH")
 
     # Groq (primary)
     groq_api_key: str | None = Field(default=None, env="GROQ_API_KEY")
